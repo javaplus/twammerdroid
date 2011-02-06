@@ -1,0 +1,3 @@
+INDEX VERSION 1.126+D:\workspaces\twammer\.metadata\.plugins\org.eclipse.jdt.core
+763785119.index
+3961398804.index

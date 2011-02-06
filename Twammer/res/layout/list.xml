@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="fill_parent"
+  android:layout_height="fill_parent"
+  android:background="@color/color_blue"
+  android:paddingBottom="1sp"
+ >
+ <ImageView
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:id="@+id/avatar"
+  android:layout_width="75dip"
+  android:layout_height="75dip"
+  android:background="@color/color_white"
+  android:src="@drawable/missing"
+ />
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="fill_parent"
+  android:layout_height="fill_parent"
+  android:background="@color/color_white"
+  android:orientation="vertical"
+ >
+ <LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="fill_parent"
+  android:layout_height="18dip"
+  android:background="@color/color_white"
+   >
+ <TextView
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:id="@+id/user"
+  android:layout_width="wrap_content"
+  android:layout_height="wrap_content"
+  android:textColor="@color/color_black"
+  android:textSize="10sp"
+  android:background="@color/color_white"
+  android:text="Hello"
+  android:textStyle="bold">
+</TextView>
+<TextView
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:id="@+id/time"
+  android:layout_width="fill_parent"
+  android:layout_height="wrap_content"
+  android:textColor="@color/color_black"
+  android:textSize="10sp"
+  android:background="@color/color_white"
+  android:text="time"
+  android:gravity="right"
+  android:paddingRight="5dip">
+</TextView>
+</LinearLayout>
+<TextView
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:id="@+id/text"
+  android:layout_width="wrap_content"
+  android:layout_height="wrap_content"
+  android:textColor="@color/color_black"
+  android:background="@color/color_white"
+  android:textSize="15sp"
+  android:text="There">
+</TextView>
+</LinearLayout>
+</LinearLayout>

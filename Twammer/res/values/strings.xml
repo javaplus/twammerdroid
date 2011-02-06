@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="hello">Ready to get some twams!</string>
+    <string name="app_name">Twammer</string>
+<color name="color_green">#ff00ff00</color>
+<color name="color_blue">#ff0000ff</color>
+<color name="color_white">#ffffffff</color>
+<color name="color_black">#ff000000</color>
+<drawable name="missing">#ffff0000</drawable>
+</resources>
