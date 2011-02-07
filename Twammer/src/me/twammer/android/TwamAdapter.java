@@ -69,15 +69,7 @@ public class TwamAdapter extends BaseAdapter {
 		}
 		
 		// start loading avatars now.
-		// update the UI in a few seconds...hopefully the Threads would have been cached.
-		new Thread(){
-			public void run() {
-				loadAvatars();
-				handler.sendEmptyMessage(0);
-			}
-		}.start();
-
-		
+		loadAvatarsAsync();
 		
 	}
 	
@@ -165,8 +157,38 @@ public class TwamAdapter extends BaseAdapter {
 				}
 			}
 		}
+		
+	}
+	
+	/*
+	 * Here we get the avatars Drawable from their URLs, but in a different thread.
+	 * Then we put the drawable back in the map.
+	 */
+	public void loadAvatarsAsync(){
+		Log.d(tag, "LoadAvatarsAsync called");
+		
+		new Thread(){
+			public void run() {
+				loadAvatars();
+				handler.sendEmptyMessage(0);
+			}
+		}.start();
+
 	}
 
+	public void addTwam(Twam twam){
+		this.twams.add(twam);
+	}
+
+	public List<Twam> getTwams() {
+		return twams;
+	}
+
+	public void setTwams(List<Twam> twams) {
+		this.twams = twams;
+	}
+	
+	
 	
 	
 }

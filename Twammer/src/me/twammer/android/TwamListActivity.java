@@ -11,12 +11,15 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import me.twammer.domain.Twam;
 import me.twammer.domain.TwamService;
 import android.app.ListActivity;
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.widget.ListView;
 
@@ -36,9 +39,41 @@ public class TwamListActivity extends ListActivity {
 	// service object to get Twams.(Not an Android service)
 	private TwamService twamService = new TwamService();
 	
+	// The adapter that backs our list data.
 	private TwamAdapter twamAdapter;
-
-	// might need a hanlder to get the messages.
+	
+	// this is used to schedule async tasks(like polling for twams)
+	private Timer timer;
+	
+	// need a timertask to check for new twams in a separate thread.
+	class MyTimerTask extends TimerTask{
+		@Override
+		public void run() {
+			twams.add(twamService.getTwam());
+			// 	send a message to main UI thread.
+			handler.sendEmptyMessage(0);
+		
+		}
+	}
+	private MyTimerTask task;
+		
+	
+	// need a handler for the TimerTask to update  
+	private Handler handler = new Handler(){
+		
+		public void handleMessage(android.os.Message msg) {
+			// convert our list of twams to an array (maybe move this to background thread)
+			List<Twam> twamList = new ArrayList<Twam>(twams);
+			// reverse the collection to put newest at top.
+			Collections.reverse(twamList);
+			// add the new ordered list to the twamAdapter
+			twamAdapter.setTwams(twamList);
+			// notify UI that data has changed so it gets refreshed.
+			twamAdapter.notifyDataSetChanged();
+			// load Avatars in the back ground
+			twamAdapter.loadAvatarsAsync();
+		}
+	};
 	
 	
 	@Override
@@ -54,6 +89,11 @@ public class TwamListActivity extends ListActivity {
 
 	
 	@Override
+	/**
+	 * Called anytime our window is displayed including being brought 
+	 *  back up(like after going to home) and then launching app again.
+	 * 
+	 */
 	protected void onResume() {
 		Log.i(tag, "Calling onResume");
 		super.onResume();
@@ -72,18 +112,33 @@ public class TwamListActivity extends ListActivity {
 		Collections.reverse(twamList);
 		this.twamAdapter =new TwamAdapter(TwamListActivity.this, twamList); 
 		setListAdapter(twamAdapter);
+		task = new MyTimerTask();
+		timer = new Timer();
+		// So, start the task in 5 seconds and run it every 5 seconds there after.
+		timer.scheduleAtFixedRate(task, 5000, 5000);
+		
 				
 	}
 
 	@Override
 	/**
 	 * Here's where you want to persist stuff before your activity is taken away.
+	 * or do any clean up before your app is destroyed.
 	 */
 	protected void onPause() {
 		super.onPause();
 		Log.d(tag, "onPause() called!");
+		
+		// kill the task that polls for the Twams.
+		task.cancel();
+		// purge the canceled task
+		timer.purge();
+		// stop our timer so we don't keep running...
+		timer.cancel();
+		
 		// Write our twams out to the file so we don't lose them.
 		writeTwamstoFile();
+
 
 	}
 
@@ -150,7 +205,7 @@ public class TwamListActivity extends ListActivity {
 				try {
 					fis.close();
 				} catch (IOException e) {
-					// swallow
+					// eat it
 				}
 			}
 		}	
