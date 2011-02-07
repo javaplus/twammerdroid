@@ -58,7 +58,8 @@ public class TwamListActivity extends ListActivity {
 	private MyTimerTask task;
 		
 	
-	// need a handler for the TimerTask to update  
+	// need a handler for the TimerTask to call back to
+	// in order to update the twam adapter and then the UI.  
 	private Handler handler = new Handler(){
 		
 		public void handleMessage(android.os.Message msg) {
