@@ -103,6 +103,13 @@ public class TwamAdapter extends BaseAdapter {
 	 */
 	public View getView(int position, View convertView, ViewGroup parent) {
 		
+		Log.d(tag, "trying to get Twam for postion:" + position);
+		// if we have no Twams then return empty view.
+		if(twams==null || twams.size()<1){
+			return emptyLayout();
+		}
+		Log.d(tag, "twams size =" + twams.size());
+		
 		LinearLayout theLayout = (LinearLayout)layoutInflator.inflate(R.layout.list, null);
 		
 		// once we have our layout from XML we can get the individual pieces to update them.
@@ -114,11 +121,13 @@ public class TwamAdapter extends BaseAdapter {
 		// we get the actual picture. Starting off we'll load a default image.
 		
 		Twam twam = twams.get(position);
-		
-		Log.d(tag, "trying to get Twam for postion:" + position);
-		Log.d(tag, "twams size =" + twams.size());
-		
-				// see if we have a cached version of the image:
+	
+		// if somehow we have a null twam show error message
+		// for this row
+		if(twam==null){
+			return errorLayout();
+		}
+		// see if we have a cached version of the image:
 		Drawable drawable =	avatars.get(twam.getImage());
 		if(drawable!=null){
 			pic.setImageDrawable(drawable);
@@ -188,7 +197,41 @@ public class TwamAdapter extends BaseAdapter {
 		this.twams = twams;
 	}
 	
-	
+	/**
+	 * 
+	 * To return an empty layout until we have a list of data.
+	 * 
+	 * @return
+	 */
+	private View emptyLayout(){
+		return (LinearLayout)layoutInflator.inflate(R.layout.empty, null);
+		
+	}
+	/**
+	 * 
+	 * Return a single row with an error message because we don't have a twam for
+	 * this postion.
+	 * 
+	 * @return
+	 */
+	private View errorLayout(){
+		LinearLayout theLayout = (LinearLayout)layoutInflator.inflate(R.layout.list, null);
+		
+		// once we have our layout from XML we can get the individual pieces to update them.
+		TextView user = (TextView)theLayout.findViewById(R.id.user);
+		TextView text = (TextView)theLayout.findViewById(R.id.text);
+		TextView time = (TextView)theLayout.findViewById(R.id.time);
+		ImageView pic = (ImageView)theLayout.findViewById(R.id.avatar);
+		
+		pic.setImageResource(R.drawable.missing);
+				
+		user.setText("Unknown");
+		text.setText("Error displaying this twam");
+		time.setText("before its time");
+		
+		return theLayout;
+
+	}
 	
 	
 }

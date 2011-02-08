@@ -49,8 +49,16 @@ public class TwamListActivity extends ListActivity {
 	class MyTimerTask extends TimerTask{
 		@Override
 		public void run() {
-			twams.add(twamService.getTwam());
-			// 	send a message to main UI thread.
+			// check for a new twam.
+			Twam newTwam = twamService.getTwam();
+			// since we are using a HashMap, it won't add a duplicate
+			boolean added = twams.add(newTwam);
+			if (added) {
+				// just for logging to see if we added it or if it was a duplicate.
+				Log.d(tag, "Added new twam!");
+			} else {
+				Log.d(tag, "Did NOT add new twam for TWAM text:" + newTwam.getText());
+			}	// 	send a message to main UI thread.
 			handler.sendEmptyMessage(0);
 		
 		}
@@ -99,23 +107,18 @@ public class TwamListActivity extends ListActivity {
 		Log.i(tag, "Calling onResume");
 		super.onResume();
 		
-		// first let's load our existing twams from the file
+		//  let's load our existing twams from the file
 		loadTwamsFromFile();
-		// now let's check for a new TWAM!
-		Twam newTwam = twamService.getTwam();
-		boolean added = this.twams.add(newTwam);
-		if (added) {
-			Log.d(tag, "Added new twam!");
-		} else {
-			Log.d(tag, "Did NOT add new twam for TWAM text:" + newTwam.getText());
-		}
 		List<Twam> twamList = new ArrayList<Twam>(this.twams);
+		// reverse the order of the Twams so the newest is on top.
 		Collections.reverse(twamList);
+		// create the twam adapter with the twam data for the list.
 		this.twamAdapter =new TwamAdapter(TwamListActivity.this, twamList); 
 		setListAdapter(twamAdapter);
+		// create a TimerTask to get new Twams in the background
 		task = new MyTimerTask();
 		timer = new Timer();
-		// So, start the task in 5 seconds and run it every 5 seconds there after.
+		// So, start the task in 0 seconds and run it every 5 seconds there after.
 		timer.scheduleAtFixedRate(task, 5000, 5000);
 		
 				
